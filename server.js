@@ -5,6 +5,11 @@ import { configDotenv } from "dotenv";
 configDotenv();
 
 import bodyParser from "body-parser";
+
+import useMongoDb from "./configs/db.js";
+
+useMongoDb();
+
 // создаем объект приложения
 const app = express();
 // настройка CORS

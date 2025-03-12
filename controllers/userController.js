@@ -1,5 +1,6 @@
 import { users } from "../bd.js";
-import { transporter } from "../utils.js";
+import { transporter, getEmail } from "../utils.js";
+import Task from "../models/taskModel.js";
 
 // Получение пользователей
 export const getUsers = async (req, res) => {
@@ -35,7 +36,7 @@ export const sendEmail = async (req, res) => {
       to: "chillside32@yandex.ru",
       subject: "Подтвердите свой email",
       text: `Пожалуйста, подтвердите ваш email, перейдя по ссылке`,
-      html: `<p>Пожалуйста, подтвердите ваш email, перейдя по ссылке:</p>`,
+      html: getEmail(_, "chillside32@yandex.ru"),
     };
 
     // Отправляем письмо
@@ -44,4 +45,15 @@ export const sendEmail = async (req, res) => {
   } catch (error) {
     res.send(error);
   }
+};
+
+// Получение пользователей
+export const createUser = async (req, res) => {
+  const name = req.body.name;
+  
+  const task = new Task({ title: name });
+
+  const savedTask = await task.save();
+
+  res.send(savedTask);
 };
