@@ -7,11 +7,15 @@ const taskSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  description: {
+  priority: {
     type: String,
     trim: true,
   },
-  completed: {
+  status: {
+    type: Boolean,
+    default: false,
+  },
+  important: {
     type: Boolean,
     default: false,
   },
@@ -22,6 +26,16 @@ const taskSchema = new mongoose.Schema({
   dueDate: {
     type: Date,
     required: false,
+  },
+});
+
+taskSchema.set("toJSON", {
+  virtuals: true,
+  versionKey: false,
+  transform: (_doc, ret) => {
+    ret.id = ret._id;
+    delete ret._id;
+    return ret;
   },
 });
 

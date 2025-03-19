@@ -1,19 +1,11 @@
 // routes/userRoutes.js
-import {
-  getUsers,
-  getOldUsers,
-  getUserById,
-  sendEmail,
-  createUser,
-} from "../controllers/userController.js";
+import { sendEmail, register, auth } from "../controllers/userController.js";
 import express from "express";
 const router = express.Router();
 
 // адресса
 router.post("/send-email", sendEmail);
-router.post("/get-all", getUsers);
-router.post("/get-old-users", getOldUsers);
-router.post("/get-by-id", getUserById);
-router.post("/create", createUser);
+router.post("/register", register);
+router.post("/auth", auth);
 
 export default router;

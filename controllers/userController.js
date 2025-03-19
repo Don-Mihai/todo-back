@@ -1,30 +1,36 @@
-import { users } from "../bd.js";
 import { transporter, getEmail } from "../utils.js";
-import Task from "../models/taskModel.js";
+import User from "../models/userModel.js";
+import bcrypt, { compare } from "bcrypt";
 
-// Получение пользователей
-export const getUsers = async (req, res) => {
-  console.log("Запрос на сервер...");
-  // отправляем ответ
-  res.send(users);
+export const register = async (req, res) => {
+  const { email, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  const user = new User({ email, password: hashedPassword });
+  const registeredUser = await user.save();
+
+  res.send(registeredUser);
 };
 
-// Получение старых пользователей
-export const getOldUsers = async (req, res) => {
-  console.log("Запрос на сервер...");
-  const oldUsers = users.filter((user) => user.age > 25);
-  // отправляем ответ
-  res.send(oldUsers);
-};
+export const auth = async (req, res) => {
+  const { email, password } = req.body;
 
-// Получение пользователя по айди
-export const getUserById = async (req, res) => {
-  const id = req.body.id;
-  console.log("Запрос на сервер...");
-  const user = users.find((user) => user.id == id);
+  // password - admin
 
-  // отправляем ответ
-  res.send(user.name);
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    res.status(500).send("нет пользователя с таким email");
+  }
+
+  const isCorrect = await compare(password, user.password);
+
+  if (!isCorrect) {
+    res.status(500).send("пароль неверный");
+  }
+
+  res.send(user);
 };
 
 // Отправка почты
@@ -45,15 +51,4 @@ export const sendEmail = async (req, res) => {
   } catch (error) {
     res.send(error);
   }
-};
-
-// Получение пользователей
-export const createUser = async (req, res) => {
-  const name = req.body.name;
-  
-  const task = new Task({ title: name });
-
-  const savedTask = await task.save();
-
-  res.send(savedTask);
 };

@@ -18,8 +18,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 import userRoutes from "./routes/userRoutes.js";
+import taskRoutes from "./routes/taskRoutes.js";
 
 app.use("/users", userRoutes);
+app.use("/tasks", taskRoutes);
 
 // начинаем прослушивать подключения на 3003 порту
 const PORT = process.env.PORT || 3003;
